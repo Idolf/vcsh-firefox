@@ -1,8 +1,11 @@
 *
 !/bin
 !/bin/firefox
+!/bin/tor
 !/docker
 !/docker/firefox
 !/docker/firefox/**
+!/docker/tor
+!/docker/tor**
 !/.gitignore.d
 !/.gitignore.d/firefox
