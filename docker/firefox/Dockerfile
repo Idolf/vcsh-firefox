@@ -1,7 +1,8 @@
 FROM debian
 RUN apt-get update && apt-get install -y iceweasel
 
-RUN export uid=10000 gid=10000 && \
+# Change to your UID/GID
+RUN export uid=1000 gid=1000 && \
     mkdir -p /home/user && \
     echo "user:x:${uid}:${gid}:User,,,:/home/user:/bin/bash" >> /etc/passwd && \
     echo "user:x:${uid}:" >> /etc/group && \
