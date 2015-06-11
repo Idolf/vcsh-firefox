@@ -1,0 +1,27 @@
+#!/bin/bash
+if [ "x`id -u`" != "x0" ]; then
+  if [ -t 0 ]; then
+    exec sudo `realpath $0` "$@"
+  else
+    exec sakura -e sudo -b `realpath $0` --no-interaction "$@"
+  fi
+fi
+
+if [ "x$1" = "x--no-interaction" ]; then
+  shift
+  exec `realpath $0` "$@" < /dev/null >/dev/null 2>/dev/null
+fi
+
+set -e
+set -v
+if [ "x$1" = "x--update" ]; then
+  cd $HOME/docker/firefox
+  docker pull debian
+  docker build -t firefox .
+fi
+
+TMP_XAUTH=`mktemp`
+xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
+chown 10000:10000 $TMP_XAUTH
+docker run --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $TMP_XAUTH:/home/user/.Xauthority firefox
+rm -rf $TMP_XAUTH

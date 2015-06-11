@@ -1,0 +1,8 @@
+*
+!/bin
+!/bin/firefox
+!/docker
+!/docker/firefox
+!/docker/firefox/Dockerfile
+!/.gitignore.d
+!/.gitignore.d/firefox
