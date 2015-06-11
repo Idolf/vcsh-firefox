@@ -3,6 +3,6 @@
 !/bin/firefox
 !/docker
 !/docker/firefox
-!/docker/firefox/Dockerfile
+!/docker/firefox/**
 !/.gitignore.d
 !/.gitignore.d/firefox
