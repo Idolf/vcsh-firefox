@@ -1,7 +1,6 @@
 FROM debian
 RUN apt-get update && apt-get install -y iceweasel
 RUN apt-get install -y xz-utils
-RUN apt-get install -y strace
 
 # Change to your UID/GID
 RUN groupadd -g 1000 user && useradd -g user -m -u 1000 user
