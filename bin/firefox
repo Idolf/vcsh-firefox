@@ -21,10 +21,22 @@ if echo -- "$@" | grep -q " --no-interaction"; then
   exit 0
 fi
 
-TMP_XAUTH=`mktemp`
-xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
-chown -R $SUDO_UID:$SUDO_GID $TMP_XAUTH
+if echo -- "$@" | grep -q " --remote="; then
+  NEW_DISPLAY="$(echo -- "$@" | grep -o ' --remote=[^ ]*' | sed 's/^[^=]*=//')"
+fi
+
 mkdir /tmp/firefox || true
 chown -R $SUDO_UID:$SUDO_UID /tmp/firefox
-docker run --rm -e DISPLAY=$DISPLAY -v /tmp/firefox:/home/user/Downloads/ -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro firefox
-rm -rf $TMP_XAUTH
+
+if [ -n "$NEW_DISPLAY" ]; then
+  EXTRA="-e DISPLAY=$NEW_DISPLAY"
+else
+  TMP_XAUTH=`mktemp`
+  xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
+  chown -R $SUDO_UID:$SUDO_GID $TMP_XAUTH
+  EXTRA="-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro"
+fi
+docker run --rm -v /tmp/firefox:/home/user/Downloads/ $EXTRA firefox
+if [ -n "$TMP_XAUTH" ]; then
+  rm -rf $TMP_XAUTH
+fi
