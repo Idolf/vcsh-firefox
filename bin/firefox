@@ -40,3 +40,4 @@ docker run --rm $(for f in `find /dev/snd -type c`; do echo " --device $f"; done
 if [ -n "$TMP_XAUTH" ]; then
   rm -rf $TMP_XAUTH
 fi
+find /tmp/firefox -type d -empty -delete
