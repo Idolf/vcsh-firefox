@@ -16,7 +16,7 @@ if echo -- "$@" | grep -q " --update"; then
 fi
 
 if echo -- "$@" | grep -q " --no-interaction"; then
-  setsid `realpath $0` >/dev/null </dev/null 2>/dev/null &
+  setsid `realpath $0` "$(echo " " "$@" | sed 's/--no-interaction//')" >/dev/null </dev/null 2>/dev/null &
   sleep 1.5
   exit 0
 fi
@@ -36,7 +36,10 @@ else
   chown -R $SUDO_UID:$SUDO_GID $TMP_XAUTH
   EXTRA="-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro"
 fi
-docker run --rm $(for f in `find /dev/snd -type c`; do echo " --device $f"; done) -v /tmp/firefox:/home/user/Downloads/ $EXTRA firefox
+if ! echo -- "$@" | grep -q " --nosound"; then
+  EXTRA="$EXTRA $(for f in `find /dev/snd -type c`; do echo " --device $f"; done)"
+fi
+docker run --rm -v /tmp/firefox:/home/user/Downloads/ $EXTRA firefox
 if [ -n "$TMP_XAUTH" ]; then
   rm -rf $TMP_XAUTH
 fi
