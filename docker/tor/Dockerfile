@@ -1,5 +1,5 @@
 FROM debian
-RUN apt-get update && apt-get install -y iceweasel gnupg
+RUN sed -i 's/main$/main contrib non-free/' /etc/apt/sources.list && apt-get update && apt-get install -y iceweasel flashplugin-nonfree
 RUN apt-get install -y xz-utils
 
 # Change to your UID/GID
