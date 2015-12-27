@@ -7,8 +7,8 @@ RUN find / -type f -perm /6000 -exec chmod -s {} + 2>/dev/null || true
 RUN groupadd -g 1000 user && useradd -g user -m -u 1000 user
 
 ADD tor-browser-bundle.pub /home/user/tor-browser-bundle.pub 
-ADD https://www.torproject.org/dist/torbrowser/5.0.4/tor-browser-linux64-5.0.4_en-US.tar.xz /home/user/tor.tar.xz
-ADD https://www.torproject.org/dist/torbrowser/5.0.4/tor-browser-linux64-5.0.4_en-US.tar.xz.asc /home/user/tor.tar.xz.asc
+ADD https://www.torproject.org/dist/torbrowser/5.0.5/tor-browser-linux64-5.0.5_en-US.tar.xz /home/user/tor.tar.xz
+ADD https://www.torproject.org/dist/torbrowser/5.0.5/tor-browser-linux64-5.0.5_en-US.tar.xz.asc /home/user/tor.tar.xz.asc
 RUN cd /home/user && chown user:user tor-browser-bundle.pub tor.tar.xz tor.tar.xz.asc
 
 USER user
