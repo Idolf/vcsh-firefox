@@ -11,8 +11,7 @@ set -e
 
 if echo -- "$@" | grep -q " --update"; then
   cd $HOME/docker/tor
-  docker pull debian
-  docker build -t tor .
+  docker build --pull=true -t tor .
 fi
 
 if echo -- "$@" | grep -q " --no-interaction"; then
@@ -26,5 +25,5 @@ xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
 chown -R $SUDO_UID:$SUDO_GID $TMP_XAUTH
 mkdir /tmp/firefox || true
 chown -R $SUDO_UID:$SUDO_UID /tmp/firefox
-docker run --rm -e DISPLAY=$DISPLAY -v /tmp/firefox:/home/user/tor-browser_en-US/Browser/Downloads/ -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro tor
+docker run --cap-drop ALL --rm -e DISPLAY=$DISPLAY -v /tmp/firefox:/home/user/tor-browser_en-US/Browser/Downloads/ -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro tor
 rm -rf $TMP_XAUTH
