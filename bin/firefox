@@ -30,7 +30,7 @@ chown -R $SUDO_UID:$SUDO_UID /tmp/firefox
 if [ -n "$NEW_DISPLAY" ]; then
   EXTRA="-e DISPLAY=$NEW_DISPLAY"
 else
-  TMP_XAUTH=`mktemp`
+  TMP_XAUTH=`mktemp /tmp/.docker-firefox-XXXX`
   xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
   chown -R $SUDO_UID:$SUDO_GID $TMP_XAUTH
   EXTRA="-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro"
@@ -38,8 +38,8 @@ fi
 if ! echo -- "$@" | grep -q " --nosound"; then
   EXTRA="$EXTRA $(for f in `find /dev/snd -type c`; do echo " --device $f"; done)"
 fi
-docker run --cap-drop ALL --rm -v /tmp/firefox:/home/user/Downloads/ $EXTRA firefox
 if [ -n "$TMP_XAUTH" ]; then
-  rm -rf $TMP_XAUTH
+  (sleep 2; rm -rf $TMP_XAUTH) &
 fi
+docker run --cap-drop ALL --rm -v /tmp/firefox:/home/user/Downloads/ $EXTRA firefox
 find /tmp/firefox -type d -empty -delete
