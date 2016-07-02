@@ -1,15 +1,15 @@
 # Base
 FROM debian
-RUN sed -i 's/main$/main contrib non-free/' /etc/apt/sources.list && apt-get update && apt-get install -y iceweasel flashplugin-nonfree && (find / -type f -perm /6000 -exec chmod -s {} + 2>/dev/null || true)
+RUN sed -i 's/main$/main contrib non-free/' /etc/apt/sources.list && apt-get update && apt-get install -y iceweasel flashplugin-nonfree ca-certificates && (find / -type f -perm /6000 -exec chmod -s {} + 2>/dev/null || true)
 RUN apt-get install -y xz-utils
 
 # Change to your UID/GID
-RUN groupadd -g 1000 user && useradd -g user -m -u 1000 user
+RUN groupadd -g 1000 user && useradd -g user -G audio -m -u 1000 user
 
 # Get TBB
 ADD tor-browser-bundle.pub /home/user/tor-browser-bundle.pub
-ADD https://www.torproject.org/dist/torbrowser/5.5.4/tor-browser-linux64-5.5.4_en-US.tar.xz /home/user/tor.tar.xz
-ADD https://www.torproject.org/dist/torbrowser/5.5.4/tor-browser-linux64-5.5.4_en-US.tar.xz.asc /home/user/tor.tar.xz.asc
+ADD https://www.torproject.org/dist/torbrowser/6.0.2/tor-browser-linux64-6.0.2_en-US.tar.xz /home/user/tor.tar.xz
+ADD https://www.torproject.org/dist/torbrowser/6.0.2/tor-browser-linux64-6.0.2_en-US.tar.xz.asc /home/user/tor.tar.xz.asc
 RUN cd /home/user && chown user:user tor-browser-bundle.pub tor.tar.xz tor.tar.xz.asc
 
 # Change to user
