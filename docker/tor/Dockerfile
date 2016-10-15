@@ -33,4 +33,4 @@ RUN echo 'pref("extensions.torbutton.resize_new_windows", 0);' >> /home/user/tor
 RUN echo 'pref("network.http.speculative-parallel-limit", 0);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js
 
 # It's go time
-CMD cd /home/user/tor-browser_en-US && ./start-tor-browser.desktop --verbose
+CMD cd /home/user/tor-browser_en-US && exec ./start-tor-browser.desktop --verbose
