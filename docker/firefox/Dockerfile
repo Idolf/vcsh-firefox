@@ -5,4 +5,4 @@ RUN sed -i 's/main$/main contrib non-free/' /etc/apt/sources.list && apt-get upd
 RUN groupadd -g 1000 user && useradd -g user -G audio -m -u 1000 user
 USER user
 ENV HOME /home/user
-CMD exec /usr/bin/firefox -no-remote
+CMD exec /usr/bin/firefox -no-remote about:blank

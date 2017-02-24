@@ -8,8 +8,8 @@ RUN groupadd -g 1000 user && useradd -g user -G audio -m -u 1000 user
 
 # Get TBB
 ADD tor-browser-bundle.pub /home/user/tor-browser-bundle.pub
-ADD https://www.torproject.org/dist/torbrowser/6.0.8/tor-browser-linux64-6.0.8_en-US.tar.xz /home/user/tor.tar.xz
-ADD https://www.torproject.org/dist/torbrowser/6.0.8/tor-browser-linux64-6.0.8_en-US.tar.xz.asc /home/user/tor.tar.xz.asc
+ADD https://www.torproject.org/dist/torbrowser/6.5/tor-browser-linux64-6.5_en-US.tar.xz /home/user/tor.tar.xz
+ADD https://www.torproject.org/dist/torbrowser/6.5/tor-browser-linux64-6.5_en-US.tar.xz.asc /home/user/tor.tar.xz.asc
 RUN cd /home/user && chown user:user tor-browser-bundle.pub tor.tar.xz tor.tar.xz.asc
 
 # Change to user
