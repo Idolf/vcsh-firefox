@@ -1,8 +1,11 @@
 *
 !/bin
+!/bin/duolingo
 !/bin/firefox
 !/bin/tor
 !/docker
+!/docker/duolingo
+!/docker/duolingo**
 !/docker/firefox
 !/docker/firefox/**
 !/docker/tor

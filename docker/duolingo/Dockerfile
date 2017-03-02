@@ -33,4 +33,6 @@ RUN \
 
 USER user
 ENV HOME /home/user
-CMD exec /usr/bin/firefox -no-remote about:blank
+
+# It's go time
+CMD /usr/bin/firefox -no-remote https://duolingo.com
