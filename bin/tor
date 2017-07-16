@@ -1,5 +1,6 @@
-#!/bin/sh
-if [ "x`id -u`" != "x0" ]; then
+#!/bin/bash
+
+if [ `id -u` != 0 ]; then
   if [ -t 0 ]; then
     exec sudo `realpath $0` "$@"
   else
@@ -9,13 +10,13 @@ fi
 
 set -e
 
-if echo -- "$@" | grep -q " --update"; then
+if echo -- "$@" | grep -q " --build"; then
   cd $HOME/docker/tor
   docker build --pull=true -t tor .
 fi
 
 if echo -- "$@" | grep -q " --no-interaction"; then
-  setsid `realpath $0` >/dev/null </dev/null 2>/dev/null &
+  setsid `realpath $0` "$(echo " " "$@" | sed 's/--no-interaction//')" >/dev/null </dev/null 2>/dev/null &
   sleep 1.5
   exit 0
 fi
@@ -25,8 +26,5 @@ xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
 chown -R $SUDO_UID:$SUDO_GID $TMP_XAUTH
 mkdir /tmp/firefox || true
 chown -R $SUDO_UID:$SUDO_UID /tmp/firefox
-if ! echo -- "$@" | grep -q " --nosound"; then
-  EXTRA="$EXTRA $(for f in `find /dev/snd -type c`; do echo " --device $f"; done)"
-fi
-(sleep 2; rm -rf $TMP_XAUTH) &
-docker run --cap-drop ALL --rm -e DISPLAY=$DISPLAY -v /tmp/firefox:/home/user/tor-browser_en-US/Browser/Downloads/ -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro $EXTRA tor
+docker run --cap-drop=all --rm -e DISPLAY=$DISPLAY -v /tmp/firefox:/home/user/tor-browser_en-US/Browser/Downloads/ -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro --device /dev/snd --group-add=$(getent group audio | cut -d: -f3) --shm-size 2g $EXTRA tor
+rm -rf $TMP_XAUTH

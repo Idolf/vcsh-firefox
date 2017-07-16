@@ -21,10 +21,10 @@ if echo -- "$@" | grep -q " --no-interaction"; then
   exit 0
 fi
 
-TMP_XAUTH=`mktemp`
+TMP_XAUTH=`mktemp /tmp/.docker-tor-XXXX`
 xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
 chown -R $SUDO_UID:$SUDO_GID $TMP_XAUTH
-mkdir -p /tmp/firefox || true
+mkdir /tmp/firefox || true
 chown -R $SUDO_UID:$SUDO_UID /tmp/firefox
-docker run --cap-drop=all --rm -e DISPLAY=$DISPLAY -v /tmp/firefox:/home/user/Downloads/ -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro -v $HOME/.XCompose:/home/user/.XCompose:ro --device /dev/snd --group-add=$(getent group audio | cut -d: -f3) firefox
+docker run --cap-drop=all --rm -e DISPLAY=$DISPLAY -v /tmp/firefox:/home/user/Downloads/ -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro --device /dev/snd --group-add=$(getent group audio | cut -d: -f3) --shm-size 2g firefox
 rm -rf $TMP_XAUTH
