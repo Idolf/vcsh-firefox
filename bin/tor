@@ -11,7 +11,7 @@ fi
 set -e
 
 if echo -- "$@" | grep -q " --build"; then
-  cd $HOME/docker/tor
+  cd /home/$SUDO_USER/docker/tor
   docker build --pull=true -t tor .
 fi
 
