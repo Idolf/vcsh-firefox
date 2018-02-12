@@ -11,7 +11,7 @@ fi
 set -e
 
 if echo -- "$@" | grep -q " --build"; then
-  cd $HOME/docker/firefox
+  cd /home/$SUDO_USER/docker/firefox
   docker build --pull=true -t firefox .
 fi
 

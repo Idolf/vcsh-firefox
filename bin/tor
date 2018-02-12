@@ -1,6 +1,8 @@
 #!/bin/bash
 
 if [ `id -u` != 0 ]; then
+  export TMP_XAUTH=`mktemp /tmp/.docker-tor-XXXX`
+  xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
   if [ -t 0 ]; then
     exec sudo `realpath $0` "$@"
   else
@@ -12,7 +14,31 @@ set -e
 
 if echo -- "$@" | grep -q " --build"; then
   cd /home/$SUDO_USER/docker/tor
+
+  VER=0
+  for i in $(curl -s https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions | \
+      sed -e 's/\[//;s/\]//;s/\"//g;s/,//g;s/-hardened//g;s/-Linux//g;s/-MacOS//g;s/-Windows//g' | sort -u); do
+    if [[ $i =~ ^[0-9]+(\.[0-9]+)?(\.[0-9]+)?$ ]]; then
+      VER=${i}
+    fi
+  done
+
+  curl -s https://dist.torproject.org/torbrowser/${VER}/sha256sums-signed-build.txt | \
+    grep tor-browser-linux64-${VER}_en-US.tar.xz | cut -f1 -d' ' | tr '\n' ' ' > sha256sum.txt
+  echo "tor-browser.tar.xz" >> sha256sum.txt
+
+  if ! sha256sum --ignore-missing --status -c sha256sum.txt; then
+    echo "Fetching newest Tor Browser"
+    curl -L https://www.torproject.org/dist/torbrowser/${VER}/tor-browser-linux64-${VER}_en-US.tar.xz > tor-browser.tar.xz
+    curl -L https://www.torproject.org/dist/torbrowser/${VER}/tor-browser-linux64-${VER}_en-US.tar.xz.asc > tor-browser.tar.xz.asc
+  fi
+
+  rm sha256sum.txt
+
   docker build --pull=true -t tor .
+
+  echo "Successfully built Tor Browser - exiting!"
+  exit 0
 fi
 
 if echo -- "$@" | grep -q " --no-interaction"; then
@@ -21,10 +47,12 @@ if echo -- "$@" | grep -q " --no-interaction"; then
   exit 0
 fi
 
-TMP_XAUTH=`mktemp /tmp/.docker-tor-XXXX`
-xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
-chown -R $SUDO_UID:$SUDO_GID $TMP_XAUTH
 mkdir /tmp/firefox || true
 chown -R $SUDO_UID:$SUDO_UID /tmp/firefox
-docker run --cap-drop=all --rm -e DISPLAY=$DISPLAY -v /tmp/firefox:/home/user/tor-browser_en-US/Browser/Downloads/ -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v $TMP_XAUTH:/home/user/.Xauthority:ro --device /dev/snd --group-add=$(getent group audio | cut -d: -f3) --shm-size 2g $EXTRA tor
+docker run --cap-drop=all --rm --shm-size 2g -e DISPLAY=$DISPLAY \
+    -v /tmp/firefox:/home/user/tor-browser_en-US/Browser/Downloads/ \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+    -v $TMP_XAUTH:/home/user/.Xauthority:ro \
+    --device /dev/snd --group-add=$(getent group audio | cut -d: -f3) \
+    tor
 rm -rf $TMP_XAUTH
