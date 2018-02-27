@@ -1,12 +1,12 @@
 #!/bin/bash
 
 if [ `id -u` != 0 ]; then
-  export TMP_XAUTH=`mktemp /tmp/.docker-tor-XXXX`
+  TMP_XAUTH=`mktemp /tmp/.docker-tor-XXXX`
   xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $TMP_XAUTH nmerge -
   if [ -t 0 ]; then
-    exec sudo `realpath $0` "$@"
+    exec sudo TMP_XAUTH=$TMP_XAUTH `realpath $0` "$@"
   else
-    exec sakura -e sudo `realpath $0` --no-interaction "$@"
+    exec sakura -e sudo TMP_XAUTH=$TMP_XAUTH `realpath $0` --no-interaction "$@"
   fi
 fi
 
