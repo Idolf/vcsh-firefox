@@ -2,7 +2,7 @@ FROM debian
 RUN sed -i 's/main$/main contrib non-free/' /etc/apt/sources.list && apt-get update && apt-get install -y iceweasel ca-certificates pulseaudio gnupg && (find / -type f -perm /6000 -exec chmod -s {} + 2>/dev/null || true)
 RUN apt-get install bzip2 curl -y
 #RUN mkdir /opt/firefox && cd /opt/firefox && curl -L -v 'https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US' | tar jxf - --strip=1
-RUN mkdir /opt/firefox && cd /opt/firefox && curl -L -v 'https://github.com/Monsterovich/firefox-fuckpa/raw/f48ebccd66c6b531d706fb454e8e54a32d264863/57.0/firefox-57.0.en-US.linux-x86_64.tar.bz2' | tar jxf - --strip=1
+RUN mkdir /opt/firefox && cd /opt/firefox && curl -L -v 'https://gitlab.com/Monsterovich/firefox-fuckpa/raw/master/62.0b4/firefox-62.0.en-US.linux-x86_64.tar.bz2?inline=false' | tar jxf - --strip=1
 RUN apt-get purge iceweasel firefox-esr -y
 ENV PATH "/opt/firefox:${PATH}"
 
@@ -22,6 +22,7 @@ RUN echo -n > /opt/firefox/defaults/pref/firefox.js && \
     echo 'pref("browser.newtabpage.enabled", false);' >> /opt/firefox/defaults/pref/firefox.js && \
     echo 'pref("browser.newtabpage.enhanced", false);' >> /opt/firefox/defaults/pref/firefox.js && \
     echo 'pref("browser.newtabpage.introShown", false);' >> /opt/firefox/defaults/pref/firefox.js && \
+    echo 'pref("signon.rememberSignons", false);' >> /opt/firefox/defaults/pref/firefox.js && \
     echo 'pref("startup.homepage_welcome_url.additional", "");' >> /opt/firefox/defaults/pref/firefox-branding.js
 
 #RUN (echo 'exit-idle-time = 0'; echo 'flat-volumes = yes') > /etc/pulse/daemon.conf
