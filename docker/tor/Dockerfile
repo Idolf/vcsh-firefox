@@ -26,19 +26,19 @@ RUN cd /home/user && tar xJf tor-browser.tar.xz
 RUN cd /home/user && rm  tor-browser-bundle.pub tor-browser.tar.xz tor-browser.tar.xz.asc
 
 # Disable startup prompt
-RUN echo 'pref("extensions.torlauncher.prompt_at_startup", false);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js && \
+RUN echo 'pref("extensions.torlauncher.prompt_at_startup", false);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
 # Set high security as default
-    echo 'pref("extensions.torbutton.security_slider", 2);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js && \
-    echo 'pref("extensions.torbutton.show_slider_notification", false);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js && \
+    echo 'pref("extensions.torbutton.security_slider", 2);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
+    echo 'pref("extensions.torbutton.show_slider_notification", false);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
 # XMonad tiling fix - potential fingerprinting vector
-    echo 'pref("extensions.torbutton.resize_new_windows", 0);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js && \
+    echo 'pref("extensions.torbutton.resize_new_windows", 0);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
 # Don't preload hovered links
-    echo 'pref("network.http.speculative-parallel-limit", 0);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js && \
+    echo 'pref("network.http.speculative-parallel-limit", 0);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
 # Change search engine to Startpage - DDG is pretty slow with no JS
-    echo 'pref("browser.search.order.extra.1", "Startpage");' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js && \
-    echo 'pref("signon.rememberSignons", false);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js && \
-    echo 'pref("privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts", true);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js && \
-    echo 'pref("browser.search.defaultenginename", "Startpage");' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js
+    echo 'pref("browser.search.order.extra.1", "Startpage");' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
+    echo 'pref("signon.rememberSignons", false);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
+    echo 'pref("privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts", true);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
+    echo 'pref("browser.search.defaultenginename", "Startpage");' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js
 
 # It's go time
 CMD pulseaudio & cd /home/user/tor-browser_en-US && exec ./start-tor-browser.desktop --verbose
