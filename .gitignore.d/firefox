@@ -2,12 +2,15 @@
 !/bin
 !/bin/duolingo
 !/bin/firefox
+!/bin/pixitracker
 !/bin/tor
 !/docker
 !/docker/duolingo
 !/docker/duolingo**
 !/docker/firefox
 !/docker/firefox/**
+!/docker/pixitracker
+!/docker/pixitracker**
 !/docker/tor
 !/docker/tor**
 !/.gitignore.d
