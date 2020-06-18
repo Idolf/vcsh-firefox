@@ -16,7 +16,7 @@ if echo -- "$@" | grep -q " --build"; then
   cd /home/$SUDO_USER/docker/tor
 
   VER=0
-  for i in $(curl -s https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions | \
+  for i in $(curl -L -s https://www.torproject.org/projects/torbrowser/RecommendedTBBVersions/ | \
       sed -e 's/\[//;s/\]//;s/\"//g;s/,//g;s/-hardened//g;s/-Linux//g;s/-MacOS//g;s/-Windows//g' | sort -u); do
     if [[ $i =~ ^[0-9]+(\.[0-9]+)?(\.[0-9]+)?$ ]]; then
       VER=${i}
@@ -32,6 +32,8 @@ if echo -- "$@" | grep -q " --build"; then
     curl -L https://www.torproject.org/dist/torbrowser/${VER}/tor-browser-linux64-${VER}_en-US.tar.xz > tor-browser.tar.xz
     curl -L https://www.torproject.org/dist/torbrowser/${VER}/tor-browser-linux64-${VER}_en-US.tar.xz.asc > tor-browser.tar.xz.asc
   fi
+
+  file tor-browser.tar.xz*
 
   rm sha256sum.txt
 

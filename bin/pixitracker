@@ -23,10 +23,8 @@ if echo -- "$@" | grep -q " --no-interaction"; then
   exit 0
 fi
 
-mkdir /tmp/pixitracker || true
-chown -R $SUDO_UID:$SUDO_UID /tmp/pixitracker
 docker run --cap-drop=all --rm --shm-size 2g -e DISPLAY=$DISPLAY \
-    -v /tmp/pixitracker:/home/user/Downloads/ \
+    -v /home/$SUDO_USER/pixitracker:/opt/pixitracker/pixitracker/host \
     -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
     -v $TMP_XAUTH:/home/user/.Xauthority:ro \
     --device /dev/snd --group-add=$(getent group audio | cut -d: -f3) \

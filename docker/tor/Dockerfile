@@ -1,6 +1,6 @@
 # Base
 FROM debian
-RUN apt-get update && apt-get install -y iceweasel pulseaudio && \
+RUN apt-get update && apt-get install -y firefox-esr pulseaudio && \
     apt-get install -y xz-utils gnupg && \
     apt-get autoremove && apt-get clean
 
@@ -20,25 +20,25 @@ USER user
 ENV HOME /home/user
 
 # Verify and install TBB
-RUN gpg --import /home/user/tor-browser-bundle.pub
+RUN gpg --no-tty --import /home/user/tor-browser-bundle.pub
 RUN gpg --verify /home/user/tor-browser.tar.xz.asc
 RUN cd /home/user && tar xJf tor-browser.tar.xz
 RUN cd /home/user && rm  tor-browser-bundle.pub tor-browser.tar.xz tor-browser.tar.xz.asc
 
 # Disable startup prompt
-RUN echo 'pref("extensions.torlauncher.prompt_at_startup", false);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
+RUN echo 'user_pref("extensions.torlauncher.prompt_at_startup", false);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js && \
 # Set high security as default
-    echo 'pref("extensions.torbutton.security_slider", 2);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
-    echo 'pref("extensions.torbutton.show_slider_notification", false);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
-# XMonad tiling fix - potential fingerprinting vector
-    echo 'pref("extensions.torbutton.resize_new_windows", 0);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
+    echo 'user_pref("extensions.torbutton.security_slider", 2);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js && \
+    echo 'user_pref("extensions.torbutton.show_slider_notification", false);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js && \
 # Don't preload hovered links
-    echo 'pref("network.http.speculative-parallel-limit", 0);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
+    echo 'user_pref("network.http.speculative-parallel-limit", 0);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js && \
 # Change search engine to Startpage - DDG is pretty slow with no JS
-    echo 'pref("browser.search.order.extra.1", "Startpage");' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
-    echo 'pref("signon.rememberSignons", false);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
-    echo 'pref("privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts", true);' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js && \
-    echo 'pref("browser.search.defaultenginename", "Startpage");' >> /home/user/tor-browser_en-US/Browser/defaults/pref/channel-prefs.js
+#    echo 'user_pref("browser.search.order.extra.1", "Startpage");' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js && \
+#    echo 'user_pref("browser.urlbar.placeholderName", "Startpage");' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js && \
+    echo 'user_pref("signon.rememberSignons", false);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js && \
+    echo 'user_pref("privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts", true);' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js && \
+#    echo 'user_pref("browser.search.defaultenginename", "Startpage");' >> /home/user/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js
+    true
 
 # It's go time
 CMD pulseaudio & cd /home/user/tor-browser_en-US && exec ./start-tor-browser.desktop --verbose
